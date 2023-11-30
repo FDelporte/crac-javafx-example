@@ -6,11 +6,14 @@ import eu.hansolo.tilesfx.TileBuilder;
 import javafx.scene.layout.HBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.crac.Context;
+import org.crac.Core;
+import org.crac.Resource;
 
 import java.util.Locale;
 import java.util.Random;
 
-public class MainWindow extends HBox {
+public class MainWindow extends HBox implements Resource {
 
     private static final Logger LOGGER = LogManager.getLogger(MainWindow.class);
 
@@ -22,6 +25,8 @@ public class MainWindow extends HBox {
     private final Tile gauge;
 
     public MainWindow() {
+        Core.getGlobalContext().register(this);
+
         this.setSpacing(25);
 
         random = new Random();
@@ -46,6 +51,16 @@ public class MainWindow extends HBox {
                 .build();
 
         this.getChildren().addAll(clock, gauge);
+    }
+
+    @Override
+    public void beforeCheckpoint(Context<? extends Resource> context) {
+        LOGGER.info("beforeCheckpoint was called");
+    }
+
+    @Override
+    public void afterRestore(Context<? extends Resource> context) {
+        LOGGER.info("afterRestore was called");
     }
 
     public void setRandomValue() {
